@@ -7,7 +7,7 @@ import { FaHome, FaCar, FaClipboardList, FaInfoCircle } from "react-icons/fa";
 import { IoCarSportOutline } from "react-icons/io5";
 import { useAuth } from "../context/useAuth";
 
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 
 export default function Home() {
   const navigate = useNavigate();

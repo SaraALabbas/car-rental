@@ -6,7 +6,7 @@ import { useAuth } from "../context/useAuth";
 import { FaPhoneAlt } from "react-icons/fa";
 import ContractLogo from "../assets/ContractLogo.jpg";
 
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 
 export default function ContractDocument() {
   const { id } = useParams();

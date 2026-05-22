@@ -12,7 +12,7 @@ import {
 } from "react-icons/fa";
 import { useAuth } from "../context/useAuth";
 
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 
 /* ================= INPUT ================= */
 const Input = ({ icon: Icon, placeholder, error, ...props }) => (

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/authStyles.css";
 import { useAuth } from "../context/useAuth";
 import { IoEye, IoEyeOff, IoArrowForward } from "react-icons/io5";
+const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function Login() {
   const handleLogin = async () => {
     if (!validate()) return;
 
-    const res = await fetch("http://127.0.0.1:8000/api/login", {
+    const res = await fetch(`${BASE_URL}/api/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ phone, password }),

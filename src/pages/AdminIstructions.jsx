@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 import { FaArrowRight } from "react-icons/fa";
 
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 
 export default function AdminInstructions() {
   const { token } = useAuth();

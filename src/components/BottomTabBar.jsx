@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/useAuth";
 
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 
 export default function BottomTabBar() {
   const navigate = useNavigate();

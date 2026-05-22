@@ -34,7 +34,6 @@ export default function Orders() {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
-        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         reason: rejection_reason,

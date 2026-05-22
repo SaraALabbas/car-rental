@@ -173,14 +173,13 @@ export default function Orders() {
           </div>
 
           {/* 🖼 الصور */}
-          <div className="border-t border-gray-700 pt-3  flex gap-3 mt-4 justify-end flex-wrap">
-            {" "}
+          <div className="border-t border-gray-700 pt-3 flex gap-3 mt-4 justify-end flex-wrap">
             {[order.id_front, order.id_back, order.payment_image].map(
               (img, i) => (
                 <img
                   key={i}
-                  src={`${BASE_URL}/storage/${img}`}
-                  onClick={() => setPreview(`${BASE_URL}/storage/${img}`)}
+                  src={img}
+                  onClick={() => setPreview(img)}
                   className="w-24 h-24 object-cover rounded cursor-pointer hover:scale-105 transition"
                 />
               ),

@@ -1,0 +1,104 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f0f0f;
+}
+
+/* الصفحة */
+.page {
+  min-height: 100vh;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* RTL */
+.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+/* عنوان */
+.title {
+  color: white;
+  font-size: 30px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* الحقل */
+.field {
+  display: flex;
+  align-items: center;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.field input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 10px;
+  font-size: 15px;
+}
+
+/* الأيقونة */
+.icon {
+  margin-left: 10px;
+  opacity: 0.7;
+}
+
+/* زر */
+.btn {
+  background: #ffd700;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  margin-top: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* رابط */
+.link {
+  color: #aaa;
+  text-align: center;
+  margin-top: 15px;
+  cursor: pointer;
+}
+
+/* خطأ */
+.error {
+  color: #ff4d4d;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+/* زر الرجوع */
+.back {
+  color: white;
+  font-size: 24px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.eye {
+  color: #aaa;
+  cursor: pointer;
+  font-size: 18px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.eye:hover {
+  color: #fff;
+}

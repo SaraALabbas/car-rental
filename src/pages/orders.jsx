@@ -20,8 +20,14 @@ const [loading, setLoading] = useState(false);
 
   setLoading(true);
 
-  try {
-    const res = await fetch(`${BASE_URL}/api/orders?page=${page}`);
+  t try {
+    const res = await fetch(`${BASE_URL}/api/bookings?page=${page}`,
+      {
+        headers: {
+          Authorization: Bearer ${token},
+          Accept: "application/json",
+        },
+      });
     const data = await res.json();
 
     setOrders((prev) => [...prev, ...data.data]);

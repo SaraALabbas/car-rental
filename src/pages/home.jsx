@@ -69,10 +69,11 @@ useEffect(() => {
   };
 }, []);
 
-  const filteredCars = cars.filter((car) =>
-    car.name.toLowerCase().includes(search.toLowerCase()),
-  );
-
+  const filteredCars = Array.isArray(cars)
+  ? cars.filter((car) =>
+      car.name.toLowerCase().includes(search.toLowerCase())
+    )
+  : [];
   return (
     <div dir="rtl" className="bg-[#0f0f0f] min-h-screen text-white pb-[80px]">
       {/* HEADER */}

@@ -84,6 +84,7 @@ useEffect(() => {
     });
 
     const data = await res.json();
+    console.log(data);
 
     // تحديث الواجهة
     setOrders((prev) =>
@@ -117,22 +118,18 @@ useEffect(() => {
   return (
     <div className="min-h-screen bg-[#0f0f0f] text-white p-4">
       {/* الهيدر مع زر الرجوع */}
-      <div className="flex justify-start mb-4">
+      <div className="flex items-center mb-6 px-1">
+        {/* العنوان في المنتصف تماماً */}
+        <h1 className="flex-1 text-2xl font-bold text-center">طلبات الحجز</h1>
+
+        {/* زر الرجوع - على أقصى اليمين */}
         <button
-          onClick={() => navigate(-1)}
-          className="text-white hover:text-yellow-400 transition"
+          onClick={() => window.history.back()}
+          className="flex items-center gap-1 text-gray-400 hover:text-white transition-colors text-xl font-medium pr-4"
         >
-          <FaArrowRight className="text-2xl" />
+          <FaArrowRight className="text-xl" />
         </button>
       </div>
-
-
-  {/* العنوان */}
-  <h1 className="text-lg sm:text-2xl font-bold text-center">
-    طلبات الحجز
-  </h1>
-
-</div>
       {orders.length === 0 && !loading && (
   <p className="text-center text-gray-400 mt-10">
     لا يوجد طلبات حجز

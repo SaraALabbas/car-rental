@@ -33,7 +33,9 @@ const [loading, setLoading] = useState(false);
 
     const data = await res.json();
 
-    setOrders((prev) => [...prev, ...data.data]);
+const newOrders = Array.isArray(data.data) ? data.data : [];
+
+setOrders((prev) => [...prev, ...newOrders]);
 
     if (data.current_page >= data.last_page) {
       setHasMore(false);

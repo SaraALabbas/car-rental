@@ -8,6 +8,9 @@ export default function Orders() {
   const { token } = useAuth();
 
   const [orders, setOrders] = useState([]);
+  const [page, setPage] = useState(1);
+const [hasMore, setHasMore] = useState(true);
+const [loading, setLoading] = useState(false);
   const [rejectId, setRejectId] = useState(null);
   const [reason, setReason] = useState("");
   const [preview, setPreview] = useState(null);

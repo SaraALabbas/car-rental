@@ -92,7 +92,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] text-white p-4 pb-20">
+    <div dir="rtl" className="min-h-screen bg-[#0f0f0f] text-white p-4 pb-20">
       {/* الهيدر مع زر الرجوع */}
       <div className="flex items-center mb-6 px-1">
         {/* العنوان في المنتصف تماماً */}

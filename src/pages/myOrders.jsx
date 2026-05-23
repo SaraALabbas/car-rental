@@ -20,7 +20,7 @@ const [preview, setPreview] = useState(null);
   setLoading(true);
 
   try {
-    const res = await fetch(`${BASE_URL}/api/bookings?page=${page}`,
+    const res = await fetch(`${BASE_URL}/api/my-bookings?page=${page}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -77,7 +77,6 @@ useEffect(() => {
       </div>
     );
   }
-  
   const formatTime = (time) => {
     if (!time) return "";
 

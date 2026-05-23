@@ -8,9 +8,6 @@ export default function Orders() {
   const { token } = useAuth();
 
   const [orders, setOrders] = useState([]);
-const [page, setPage] = useState(1);
-const [hasMore, setHasMore] = useState(true);
-const [loading, setLoading] = useState(false);
   const [rejectId, setRejectId] = useState(null);
   const [reason, setReason] = useState("");
   const [preview, setPreview] = useState(null);
@@ -28,14 +25,12 @@ const [loading, setLoading] = useState(false);
           Authorization: Bearer ${token},
           Accept: "application/json",
         },
-      },
+      }
     );
 
     const data = await res.json();
 
-const newOrders = Array.isArray(data.data) ? data.data : [];
-
-setOrders((prev) => [...prev, ...newOrders]);
+    setOrders((prev) => [...prev, ...data.data]);
 
     if (data.current_page >= data.last_page) {
       setHasMore(false);
@@ -46,7 +41,6 @@ setOrders((prev) => [...prev, ...newOrders]);
 
   setLoading(false);
 };
-
 useEffect(() => {
   fetchOrders();
 }, [page]);
@@ -61,9 +55,9 @@ useEffect(() => {
   };
 
   window.addEventListener("scroll", handleScroll);
-
   return () => window.removeEventListener("scroll", handleScroll);
 }, []);
+
   const updateStatus = async (id, status, rejection_reason = "") => {
     let url;
 
@@ -88,11 +82,10 @@ useEffect(() => {
     console.log(data);
 
     // تحديث الواجهة
-   setOrders((prev) =>
-  (Array.isArray(prev) ? prev : []).map((o) =>
-    o.id === id ? { ...o, status, rejection_reason } : o
-  )
-);
+    setOrders((prev) =>
+      prev.map((o) => (o.id === id ? { ...o, status, rejection_reason } : o)),
+    );
+
     setRejectId(null);
     setReason("");
   };
@@ -127,9 +120,9 @@ useEffect(() => {
         {/* زر الرجوع - على أقصى اليمين */}
         <button
           onClick={() => window.history.back()}
-          className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-base font-medium pr-2"
+          className="flex items-center gap-1 text-gray-400 hover:text-white transition-colors text-sm font-medium pr-4"
         >
-          <FaArrowRight className="text-xl" />
+          <FaArrowRight className="text-lg" />
         </button>
       </div>
       {orders.length === 0 && !loading && (
@@ -137,8 +130,7 @@ useEffect(() => {
     لا يوجد طلبات حجز
   </p>
 )}
-
-{orders.map((order) => (
+      {orders.map((order) => (
         <div
           key={order.id}
           className="bg-[#1a1a1a] p-5 rounded-xl mb-5 border border-gray-700"

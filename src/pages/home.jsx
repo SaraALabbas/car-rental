@@ -207,11 +207,7 @@ useEffect(() => {
               عرض التفاصيل
             </button>
           </div>
-          {loading && (
-  <p className="text-center text-yellow-400 py-6">
-    جاري تحميل المزيد...
-  </p>
-)}
+          
         ))}
       </div>
 

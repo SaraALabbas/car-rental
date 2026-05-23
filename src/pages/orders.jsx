@@ -118,18 +118,22 @@ useEffect(() => {
   return (
     <div className="min-h-screen bg-[#0f0f0f] text-white p-4">
       {/* الهيدر مع زر الرجوع */}
-      <div className="flex items-center mb-6 px-1">
-        {/* العنوان في المنتصف تماماً */}
-        <h1 className="flex-1 text-2xl font-bold text-center">طلبات الحجز</h1>
+      <div className="relative flex items-center justify-center mb-6 px-2 py-3">
 
-        {/* زر الرجوع - على أقصى اليمين */}
-        <button
-          onClick={() => window.history.back()}
-          className="flex items-center gap-1 text-gray-400 hover:text-white transition-colors text-xl font-medium pr-4"
-        >
-          <FaArrowRight className="text-lg" />
-        </button>
-      </div>
+  {/* زر الرجوع */}
+  <button
+    onClick={() => window.history.back()}
+    className="absolute right-2 w-9 h-9 flex items-center justify-center rounded-full bg-[#1f1f1f] text-gray-300 hover:text-white hover:bg-[#2a2a2a] transition"
+  >
+    <FaArrowRight className="text-base" />
+  </button>
+
+  {/* العنوان */}
+  <h1 className="text-lg sm:text-2xl font-bold text-center">
+    طلبات الحجز
+  </h1>
+
+</div>
       {orders.length === 0 && !loading && (
   <p className="text-center text-gray-400 mt-10">
     لا يوجد طلبات حجز

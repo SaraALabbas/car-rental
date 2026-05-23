@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
+import BottomTabBar from "../components/BottomTabBar";
+
 
 import {
   FaArrowRight,
@@ -40,14 +42,14 @@ export default function Instructions() {
   return (
     <div className="min-h-screen bg-black text-white px-6 py-10" dir="rtl">
       {/* زر الرجوع */}
-      <div className="mb-8">
+      {/* <div className="mb-8">
         <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 border border-gray-700 px-5 py-3 rounded-xl transition"
         >
           <FaArrowRight />
         </button>
-      </div>
+      </div> */}
 
       {/* العنوان */}
       <div className="text-center mb-12">
@@ -79,6 +81,7 @@ export default function Instructions() {
           </div>
         ))}
       </div>
+      <BottomTabBar/>
     </div>
   );
 }

@@ -129,43 +129,37 @@ export default function AdminContracts() {
                 </div>
 
                 {/* صور الهوية */}
-                <div className="flex justify-center gap-4 md:gap-6 flex-nowrap items-start">
-                  {/* الوجه الأمامي */}
-                  <div className="text-center flex-1 flex flex-col">
-                    <div className="h-40 bg-white rounded-xl border-2 border-yellow-400 overflow-hidden flex items-center justify-center">
-                      <img
-                        src={`${BASE_URL}/storage/${c.booking?.id_front}`}
-                        alt="front"
-                        onClick={() =>
-                          setPreviewImage(
-                            `${BASE_URL}/storage/${c.booking?.id_front}`,
-                          )
-                        }
-                        className="w-full h-full object-contain cursor-pointer hover:scale-105 transition"
-                      />
-                    </div>
+<div className="flex justify-center gap-4 md:gap-6 flex-nowrap items-start">
+  
+  {/* الوجه الأمامي */}
+  <div className="text-center flex-1 flex flex-col">
+    <div className="h-40 bg-white rounded-xl border-2 border-yellow-400 overflow-hidden flex items-center justify-center">
+      <img
+        src={c.booking?.id_front}
+        alt="front"
+        onClick={() => setPreviewImage(c.booking?.id_front)}
+        className="w-full h-full object-contain cursor-pointer hover:scale-105 transition"
+      />
+    </div>
 
-                    <p className="text-xs text-gray-400 mt-2">الوجه الأمامي</p>
-                  </div>
+    <p className="text-xs text-gray-400 mt-2">الوجه الأمامي</p>
+  </div>
 
-                  {/* الوجه الخلفي */}
-                  <div className="text-center flex-1 flex flex-col">
-                    <div className="h-40 bg-white rounded-xl border-2 border-yellow-400 overflow-hidden flex items-center justify-center">
-                      <img
-                        src={`${BASE_URL}/storage/${c.booking?.id_back}`}
-                        alt="back"
-                        onClick={() =>
-                          setPreviewImage(
-                            `${BASE_URL}/storage/${c.booking?.id_back}`,
-                          )
-                        }
-                        className="w-full h-full object-contain cursor-pointer hover:scale-105 transition"
-                      />
-                    </div>
+  {/* الوجه الخلفي */}
+  <div className="text-center flex-1 flex flex-col">
+    <div className="h-40 bg-white rounded-xl border-2 border-yellow-400 overflow-hidden flex items-center justify-center">
+      <img
+        src={c.booking?.id_back}
+        alt="back"
+        onClick={() => setPreviewImage(c.booking?.id_back)}
+        className="w-full h-full object-contain cursor-pointer hover:scale-105 transition"
+      />
+    </div>
 
-                    <p className="text-xs text-gray-400 mt-2">الوجه الخلفي</p>
-                  </div>
-                </div>
+    <p className="text-xs text-gray-400 mt-2">الوجه الخلفي</p>
+  </div>
+
+</div>
               </div>
             </div>
           ))}

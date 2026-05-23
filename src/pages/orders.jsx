@@ -21,16 +21,7 @@ const [loading, setLoading] = useState(false);
   setLoading(true);
 
   try {
-    const res = await fetch(
-      `${BASE_URL}/api/bookings?page=${page}`,
-      {
-        headers: {
-          Authorization: Bearer ${token},
-          Accept: "application/json",
-        },
-      }
-    );
-
+    const res = await fetch(`${BASE_URL}/api/orders?page=${page}`);
     const data = await res.json();
 
     setOrders((prev) => [...prev, ...data.data]);
@@ -38,15 +29,18 @@ const [loading, setLoading] = useState(false);
     if (data.current_page >= data.last_page) {
       setHasMore(false);
     }
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.error(error);
   }
 
   setLoading(false);
 };
+
+
 useEffect(() => {
   fetchOrders();
 }, [page]);
+
 useEffect(() => {
   const handleScroll = () => {
     if (

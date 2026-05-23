@@ -86,10 +86,11 @@ useEffect(() => {
     console.log(data);
 
     // تحديث الواجهة
-    setOrders((prev) =>
-      prev.map((o) => (o.id === id ? { ...o, status, rejection_reason } : o)),
-    );
-
+   setOrders((prev) =>
+  (Array.isArray(prev) ? prev : []).map((o) =>
+    o.id === id ? { ...o, status, rejection_reason } : o
+  )
+);
     setRejectId(null);
     setReason("");
   };

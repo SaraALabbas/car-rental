@@ -8,18 +8,60 @@ export default function Orders() {
   const { token } = useAuth();
 
   const [orders, setOrders] = useState([]);
+const [page, setPage] = useState(1);
+const [hasMore, setHasMore] = useState(true);
+const [loading, setLoading] = useState(false);
   const [rejectId, setRejectId] = useState(null);
   const [reason, setReason] = useState("");
   const [preview, setPreview] = useState(null);
 
-  useEffect(() => {
-    fetch(`${BASE_URL}/api/bookings`, {
-      headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
-    })
-      .then((res) => res.json())
-      .then((data) => setOrders(data));
-  }, []);
+  const fetchOrders = async () => {
+  if (loading || !hasMore) return;
 
+  setLoading(true);
+
+  try {
+    const res = await fetch(
+      `${BASE_URL}/api/bookings?page=${page}`,
+      {
+        headers: {
+          Authorization: Bearer ${token},
+          Accept: "application/json",
+        },
+      },
+    );
+
+    const data = await res.json();
+
+    setOrders((prev) => [...prev, ...data.data]);
+
+    if (data.current_page >= data.last_page) {
+      setHasMore(false);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+
+  setLoading(false);
+};
+
+useEffect(() => {
+  fetchOrders();
+}, [page]);
+useEffect(() => {
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 100 >=
+      document.documentElement.scrollHeight
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
   const updateStatus = async (id, status, rejection_reason = "") => {
     let url;
 
@@ -82,12 +124,18 @@ export default function Orders() {
         {/* زر الرجوع - على أقصى اليمين */}
         <button
           onClick={() => window.history.back()}
-          className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-xl font-medium pr-4"
+          className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-base font-medium pr-2"
         >
-          <FaArrowRight className="text-3xl" />
+          <FaArrowRight className="text-xl" />
         </button>
       </div>
-      {orders.map((order) => (
+      {orders.length === 0 && !loading && (
+  <p className="text-center text-gray-400 mt-10">
+    لا يوجد طلبات حجز
+  </p>
+)}
+
+{orders.map((order) => (
         <div
           key={order.id}
           className="bg-[#1a1a1a] p-5 rounded-xl mb-5 border border-gray-700"

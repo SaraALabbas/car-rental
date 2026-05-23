@@ -118,15 +118,15 @@ useEffect(() => {
   return (
     <div className="min-h-screen bg-[#0f0f0f] text-white p-4">
       {/* الهيدر مع زر الرجوع */}
-      <div className="relative flex items-center justify-center mb-6 px-2 py-3">
+      <div className="flex justify-start mb-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="text-white hover:text-yellow-400 transition"
+        >
+          <FaArrowRight className="text-2xl" />
+        </button>
+      </div>
 
-  {/* زر الرجوع */}
-  <button
-    onClick={() => window.history.back()}
-    className="absolute right-2 w-9 h-9 flex items-center justify-center rounded-full bg-[#1f1f1f] text-gray-300 hover:text-white hover:bg-[#2a2a2a] transition"
-  >
-    <FaArrowRight className="text-base" />
-  </button>
 
   {/* العنوان */}
   <h1 className="text-lg sm:text-2xl font-bold text-center">

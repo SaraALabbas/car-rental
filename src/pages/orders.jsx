@@ -20,7 +20,7 @@ const [loading, setLoading] = useState(false);
 
   setLoading(true);
 
-  t try {
+  try {
     const res = await fetch(`${BASE_URL}/api/bookings?page=${page}`,
       {
         headers: {

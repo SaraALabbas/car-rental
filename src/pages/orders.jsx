@@ -125,9 +125,9 @@ useEffect(() => {
         {/* زر الرجوع - على أقصى اليمين */}
         <button
           onClick={() => window.history.back()}
-          className="flex items-center gap-1 text-gray-400 hover:text-white transition-colors text-sm font-medium pr-4"
+          className="flex items-center gap-1 text-gray-400 hover:text-white transition-colors text-xl font-medium pr-4"
         >
-          <FaArrowRight className="text-xl" />
+          <FaArrowRight className="text-lg" />
         </button>
       </div>
       {orders.length === 0 && !loading && (

@@ -17,6 +17,9 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [role, setRole] = useState(null);
   const [cars, setCars] = useState([]);
+  const [page, setPage] = useState(1);
+const [hasMore, setHasMore] = useState(true);
+const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -24,11 +27,47 @@ export default function Home() {
     }
   }, []);
 
-  useEffect(() => {
-    fetch(`${BASE_URL}/api/cars`)
-      .then((res) => res.json())
-      .then((data) => setCars(data));
-  }, []);
+  const fetchCars = async () => {
+  if (loading || !hasMore) return;
+
+  setLoading(true);
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/cars?page=${page}`);
+    const data = await res.json();
+
+    setCars((prev) => [...prev, ...data.data]);
+
+    if (data.current_page >= data.last_page) {
+      setHasMore(false);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  setLoading(false);
+};
+
+useEffect(() => {
+  fetchCars();
+}, [page]);
+
+useEffect(() => {
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 100 >=
+      document.documentElement.scrollHeight
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, []);
 
   const filteredCars = cars.filter((car) =>
     car.name.toLowerCase().includes(search.toLowerCase()),
@@ -150,6 +189,7 @@ export default function Home() {
             className="bg-[#1a1a1a] p-4 rounded-2xl w-full text-right place-self-start lg:place-self-end"
           >
             <img
+            loading="lazy"
               src={car.image1}
               alt={car.name}
               className="w-full h-[220px] object-cover rounded-xl"
@@ -166,6 +206,11 @@ export default function Home() {
               عرض التفاصيل
             </button>
           </div>
+          {loading && (
+  <p className="text-center text-yellow-400 py-6">
+    جاري تحميل المزيد...
+  </p>
+)}
         ))}
       </div>
 

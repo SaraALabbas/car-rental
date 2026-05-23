@@ -24,7 +24,7 @@ const [loading, setLoading] = useState(false);
     const res = await fetch(`{BASE_URL}/api/bookings?page=${page}`,
       {
         headers: {
-          Authorization: Bearer ${token},
+          Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
       }

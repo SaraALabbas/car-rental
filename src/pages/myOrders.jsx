@@ -9,28 +9,58 @@ const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 export default function MyOrders() {
   const { token } = useAuth();
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [preview, setPreview] = useState(null);
+  const [page, setPage] = useState(1);
+const [hasMore, setHasMore] = useState(true);
+const [loading, setLoading] = useState(false);
+const [preview, setPreview] = useState(null);
 
-  useEffect(() => {
-    if (!token) return;
+  const fetchOrders = async () => {
+  if (loading || !hasMore) return;
 
-    fetch(`${BASE_URL}/api/my-bookings`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setOrders(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching my bookings:", err);
-        setLoading(false);
-      });
-  }, [token]);
+  setLoading(true);
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/bookings?page=${page}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      }
+    );
+
+    const data = await res.json();
+
+    setOrders((prev) => [...prev, ...data.data]);
+
+    if (data.current_page >= data.last_page) {
+      setHasMore(false);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  setLoading(false);
+};
+
+
+useEffect(() => {
+  fetchOrders();
+}, [page]);
+
+useEffect(() => {
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 100 >=
+      document.documentElement.scrollHeight
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
 
   const calculateTotal = (start, end, price) => {
     if (!start || !end || !price) return 0;
@@ -47,6 +77,7 @@ export default function MyOrders() {
       </div>
     );
   }
+  
   const formatTime = (time) => {
     if (!time) return "";
 

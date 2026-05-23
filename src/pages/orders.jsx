@@ -84,7 +84,6 @@ useEffect(() => {
     });
 
     const data = await res.json();
-    console.log(data);
 
     // تحديث الواجهة
     setOrders((prev) =>

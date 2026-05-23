@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/useAuth";
 import { FaArrowRight } from "react-icons/fa";
+import BottomTabBar from "../components/BottomTabBar";
+
 
 const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 
@@ -67,12 +69,12 @@ export default function MyOrders() {
         <h1 className="flex-1 text-2xl font-bold text-center">طلباتي</h1>
 
         {/* زر الرجوع - على أقصى اليمين */}
-        <button
+        {/* <button
           onClick={() => window.history.back()}
           className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-xl font-medium pr-4"
         >
           <FaArrowRight className="text-3xl" />
-        </button>
+        </button> */}
       </div>
 
       {orders.length === 0 ? (
@@ -213,6 +215,7 @@ export default function MyOrders() {
           />
         </div>
       )}
+      <BottomTabBar/>
     </div>
   );
 }

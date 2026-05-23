@@ -21,13 +21,15 @@ const [loading, setLoading] = useState(false);
   setLoading(true);
 
   try {
-    const res = await fetch(`${BASE_URL}/api/bookings?page=${page}`,
+    const res = await fetch(`{BASE_URL}/api/bookings?page=${page}`,
       {
         headers: {
           Authorization: Bearer ${token},
           Accept: "application/json",
         },
-      });
+      }
+    );
+
     const data = await res.json();
 
     setOrders((prev) => [...prev, ...data.data]);
@@ -125,7 +127,7 @@ useEffect(() => {
           onClick={() => window.history.back()}
           className="flex items-center gap-1 text-gray-400 hover:text-white transition-colors text-sm font-medium pr-4"
         >
-          <FaArrowRight className="text-lg" />
+          <FaArrowRight className="text-xl" />
         </button>
       </div>
       {orders.length === 0 && !loading && (

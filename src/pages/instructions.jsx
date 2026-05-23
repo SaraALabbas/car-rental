@@ -5,7 +5,6 @@ import BottomTabBar from "../components/BottomTabBar";
 
 
 import {
-  FaArrowRight,
   FaCarSide,
   FaShieldAlt,
   FaClipboardList,

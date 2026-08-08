@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "../styles/authStyles.css";
 import { useAuth } from "../context/useAuth";
 import { IoEye, IoEyeOff, IoArrowForward } from "react-icons/io5";
-const BASE_URL = "https://car-rental-api-xwof.onrender.com";
+import BASE_URL from "../config/api";
+// const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -36,7 +37,6 @@ export default function Register() {
 
   const handleRegister = async () => {
     if (!validate()) return;
-
     const res = await fetch(`${BASE_URL}/api/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

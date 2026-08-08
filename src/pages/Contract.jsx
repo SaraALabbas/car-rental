@@ -1,88 +1,46 @@
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
-import { useAuth } from "../context/useAuth";
 import { FaPhoneAlt } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+
 import ContractLogo from "../assets/Logo.jpg";
-import BASE_URL from "../config/api";
 
 // const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 
-export default function ContractDocument() {
-  const { id } = useParams();
-  const { token } = useAuth();
-  const [contract, setContract] = useState(null);
-  const ref = useRef();
-
-  useEffect(() => {
-    fetch(`${BASE_URL}/api/contracts/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then(setContract);
-  }, [id, token]);
-
-  const downloadPDF = async () => {
-    const element = ref.current;
-
-    // تحويل العقد لصورة كاملة
-    const canvas = await html2canvas(element, {
-      scale: 3,
-      useCORS: true,
-      scrollY: -window.scrollY,
-    });
-
-    const imgData = canvas.toDataURL("image/jpeg", 1.0);
-
-    // إنشاء PDF بحجم A4
-    const pdf = new jsPDF({
-      orientation: "p",
-      unit: "mm",
-      format: "a4",
-    });
-
-    const pdfWidth = 210;
-    const pdfHeight = 297;
-
-    // نخلي الصورة تغطي كامل الصفحة
-    pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
-
-    pdf.save(`contract_${contract.contract_number}.pdf`);
-  };
-
-  if (!contract) return <p>جاري التحميل...</p>;
+export default function Contract() {
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-[#F8F5F1] p-6" dir="rtl">
       {/* العنوان والأزرار */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-[#B67A2E]">وثيقة العقد</h1>
-
         <button
-          onClick={downloadPDF}
+          onClick={() => navigate("/home")}
           className="
-          bg-[#B67A2E]
-          hover:bg-[#9A6525]
-          text-white
-          px-6
-          py-3
-          rounded-xl
-          shadow
-          transition
-        "
+      w-10 h-10
+      flex items-center justify-center
+      rounded-full
+      bg-white
+      border border-[#D7B98E]
+      text-[#B67A2E]
+      hover:bg-[#F8F5F1]
+      hover:text-[#9A6525]
+      transition
+      shadow-sm
+    "
         >
-          تحميل PDF
+          <IoClose size={24} />
         </button>
-      </div>
 
+        <h1 className="flex-1 text-center text-3xl font-bold text-[#B67A2E]">
+          وثيقة العقد
+        </h1>
+
+        {/* عنصر وهمي ليبقى العنوان في المنتصف */}
+        <div className="w-10"></div>
+      </div>
       {/* صفحة العقد */}
       <div className="overflow-auto rounded-2xl shadow-lg">
         <div
-          ref={ref}
           className="
           bg-white
           text-black
@@ -173,7 +131,6 @@ export default function ContractDocument() {
                     <input
                       dir="rtl"
                       type="text"
-                      defaultValue={contract.user?.name || ""}
                       className="border-b border-black w-full mt-1 outline-none bg-transparent min-h-[28px] text-right"
                     />
                   </td>
@@ -281,7 +238,6 @@ export default function ContractDocument() {
                     <input
                       dir="rtl"
                       type="text"
-                      defaultValue={contract.user?.phone || ""}
                       className="border-b border-black w-full mt-1 outline-none bg-transparent min-h-[28px] text-right"
                     />
                   </td>
@@ -303,48 +259,31 @@ export default function ContractDocument() {
                 اتفق الفريق الأول مع الفريق الثاني على إيجار سيارة نوع:
               </span>
 
-              <span className="border-b border-black min-w-[90px] px-2 text-center">
-                {contract.booking?.car?.name || ""}
-              </span>
+              <span className="border-b border-black min-w-[90px] px-2 text-center"></span>
 
               <span className="font-semibold">موديل:</span>
 
-              <span className="border-b border-black min-w-[90px] px-2 text-center">
-                {contract.booking?.car?.model_year || ""}
-              </span>
+              <span className="border-b border-black min-w-[90px] px-2 text-center"></span>
               <span className="font-semibold">اللون:</span>
 
-              <span className="border-b border-black min-w-[90px] px-2 text-center">
-                {contract.booking?.car?.color || ""}
-              </span>
+              <span className="border-b border-black min-w-[90px] px-2 text-center"></span>
             </div>
 
             {/* السطر الثاني */}
             <div className="flex flex-wrap items-center gap-3 mb-5">
               <span className="font-semibold">رقم اللوحة</span>
 
-              <span className="border-b border-black min-w-[140px] px-2 text-center">
-                {contract.booking?.car?.plate_number || ""}
-              </span>
+              <span className="border-b border-black min-w-[140px] px-2 text-center"></span>
 
               <span className="font-semibold">ولمدة</span>
 
-              <span className="border-b border-black min-w-[100px] px-2 text-center">
-                {Math.ceil(
-                  (new Date(contract.booking?.return_date) -
-                    new Date(contract.booking?.pickup_date)) /
-                    (1000 * 60 * 60 * 24),
-                ).toLocaleString("ar-EG")}{" "}
-                يوم
-              </span>
+              <span className="border-b border-black min-w-[100px] px-2 text-center"></span>
 
               <span className="font-semibold">
                 لقاء بدل نقدي لليوم الواحد وقدره
               </span>
 
-              <span className="border-b border-black min-w-[100px] px-2 text-center">
-                {contract.booking?.car?.price || ""}
-              </span>
+              <span className="border-b border-black min-w-[100px] px-2 text-center"></span>
 
               <span>$</span>
             </div>
@@ -353,31 +292,15 @@ export default function ContractDocument() {
             <div className="flex flex-wrap items-center gap-3 mb-5">
               <span className="font-semibold">ساعة المغادرة</span>
 
-              <span className="border-b border-black min-w-[100px] px-2 text-center">
-                {new Date(
-                  `1970-01-01T${contract.booking?.return_time}`,
-                ).toLocaleTimeString("ar-EG", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: true,
-                })}
-              </span>
+              <span className="border-b border-black min-w-[100px] px-2 text-center"></span>
 
               <span className="font-semibold">اعتباراً من تاريخ</span>
 
-              <span className="border-b border-black min-w-[140px] px-2 text-center">
-                {new Date(contract.booking?.pickup_date).toLocaleDateString(
-                  "ar-EG",
-                )}
-              </span>
+              <span className="border-b border-black min-w-[140px] px-2 text-center"></span>
 
               <span className="font-semibold">ولغاية تاريخ</span>
 
-              <span className="border-b border-black min-w-[140px] px-2 text-center">
-                {new Date(contract.booking?.return_date).toLocaleDateString(
-                  "ar-EG",
-                )}
-              </span>
+              <span className="border-b border-black min-w-[140px] px-2 text-center"></span>
             </div>
 
             {/* السطر الرابع */}
@@ -386,7 +309,6 @@ export default function ContractDocument() {
 
               <input
                 type="text"
-                defaultValue={contract.booking?.car?.insurance || ""}
                 style={{
                   width: "80px",
                   minWidth: "80px",
@@ -398,9 +320,7 @@ export default function ContractDocument() {
                 الكيلو متر المسموح لليوم الواحد
               </span>
 
-              <span className="border-b border-black min-w-[100px] px-2 text-center">
-                {contract.booking?.car?.daily_km || ""}
-              </span>
+              <span className="border-b border-black min-w-[100px] px-2 text-center"></span>
 
               <span className="font-semibold">قيمة الساعة الزائدة</span>
 
@@ -515,12 +435,7 @@ export default function ContractDocument() {
           {/* ================= خاتمة العقد ================= */}
           <div className="mt-20 text-right pr-6 text-[15px] leading-loose">
             <p className="mb-4">
-              حرر هذا العقد على نسختين في تاريخ{" "}
-              <span className="px-6">
-                {new Date(contract.booking?.pickup_date).toLocaleDateString(
-                  "ar-EG",
-                )}
-              </span>
+              حرر هذا العقد على نسختين في تاريخ <span className="px-6"></span>
               وعلى مسؤولية طرفي العقد
             </p>
           </div>

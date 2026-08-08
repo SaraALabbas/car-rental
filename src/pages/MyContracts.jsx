@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 import { FaCarSide, FaCalendarAlt, FaArrowRight } from "react-icons/fa";
+import BASE_URL from "../config/api";
 
-const BASE_URL = "https://car-rental-api-xwof.onrender.com";
+// const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 
 export default function MyContracts() {
   const [contracts, setContracts] = useState([]);

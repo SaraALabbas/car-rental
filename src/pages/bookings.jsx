@@ -1,18 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   FaArrowRight,
   FaUser,
   FaPhone,
-  FaCalendarAlt,
   FaUpload,
   FaCopy,
-  FaPlane,
   FaExclamationCircle,
 } from "react-icons/fa";
 import { useAuth } from "../context/useAuth";
+import BASE_URL from "../config/api";
 
-const BASE_URL = "https://car-rental-api-xwof.onrender.com";
+// const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 
 /* ================= INPUT ================= */
 const Input = ({ icon: Icon, placeholder, error, ...props }) => (
@@ -22,7 +21,7 @@ const Input = ({ icon: Icon, placeholder, error, ...props }) => (
       <input
         {...props}
         placeholder={placeholder}
-        className="w-full p-3 pr-10 bg-[#1a1a1a] rounded text-right border border-gray-700 text-white"
+        className="w-full p-3 pr-10 bg-white rounded-xl text-right border border-[#B67A2E] text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#B67A2E]"
       />
     </div>
 
@@ -39,20 +38,20 @@ const Input = ({ icon: Icon, placeholder, error, ...props }) => (
 function ImageBox({ field, label, formData, setFormData, errors }) {
   return (
     <div className="mb-4">
-      <label className="flex justify-end items-center gap-2 text-gray-300 mb-2">
+      <label className="flex justify-end items-center gap-2 text-sm text-[#555] font-medium mb-2">
         {label} <FaUpload />
       </label>
 
-      <label className="block bg-[#1a1a1a] h-32 rounded border border-gray-700 cursor-pointer overflow-hidden flex items-center justify-center">
+      <label className="block bg-white h-32 rounded-xl border border-[#B67A2E] cursor-pointer overflow-hidden flex items-center justify-center">
+        {" "}
         {formData[field] ? (
           <img
             src={URL.createObjectURL(formData[field])}
             className="w-full h-full object-cover"
           />
         ) : (
-          <span className="text-gray-500">اضغط لرفع صورة</span>
+          <span className="text-gray-600">اضغط لرفع صورة</span>
         )}
-
         <input
           type="file"
           hidden
@@ -74,19 +73,47 @@ export default function BookingForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const car_id = id || location.state?.car_id;
-  const carPrice = location.state?.price || 50;
-  const [airportDelivery, setAirportDelivery] = useState(false);
-  const [selectedAirport, setSelectedAirport] = useState("");
+  const [bookingNumber, setBookingNumber] = useState("");
+  const bookingInfo = location.state?.bookingInfo;
+  const [dailyPrice, setDailyPrice] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [finalPrice, setFinalPrice] = useState(0);
+
+  useEffect(() => {
+    fetch(`${BASE_URL}/api/cars/${car_id}`)
+      .then((res) => res.json())
+      .then((car) => {
+        setDailyPrice(car.price);
+      });
+  }, [car_id]);
+
+  useEffect(() => {
+    if (!bookingInfo || !dailyPrice) return;
+
+    const pickup = new Date(bookingInfo.pickup_date);
+    const ret = new Date(bookingInfo.return_date);
+
+    let days = Math.ceil((ret - pickup) / (1000 * 60 * 60 * 24));
+
+    if (days < 1) days = 1;
+
+    let discountPercent = 0;
+
+    if (days >= 3) {
+      discountPercent = 12 + (days - 3);
+    }
+
+    const total = dailyPrice * days;
+    const final = total - (total * discountPercent) / 100;
+
+    setDiscount(discountPercent);
+    setFinalPrice(final);
+  }, [dailyPrice, bookingInfo]);
 
   const { token } = useAuth();
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
-    pickupDate: "",
-    pickupTime: "",
-
-    returnDate: "",
-    returnTime: "",
     idFront: null,
     idBack: null,
     paymentProof: null,
@@ -97,25 +124,6 @@ export default function BookingForm() {
 
   const paymentLink = "2fcf9b7e1d77db640c5b11a26bd1e780";
 
-  /* ================= CALC ================= */
-  const calculateDays = () => {
-    if (!formData.pickupDate || !formData.returnDate)
-      return { days: 0, total: 0 };
-
-    const start = new Date(formData.pickupDate);
-    const end = new Date(formData.returnDate);
-
-    const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-
-    return {
-      days: diff > 0 ? diff : 0,
-      total: diff > 0 ? diff * carPrice : 0,
-    };
-  };
-
-  const { days, total } = calculateDays();
-  const today = new Date().toISOString().split("T")[0];
-
   /* ================= VALIDATION ================= */
   const validate = () => {
     let err = {};
@@ -123,61 +131,6 @@ export default function BookingForm() {
     if (!formData.fullName) err.fullName = "الاسم مطلوب";
 
     if (!formData.phone) err.phone = "رقم الهاتف مطلوب";
-
-    if (!formData.pickupDate) err.pickupDate = "حدد تاريخ الاستلام";
-
-    if (!formData.pickupTime) err.pickupTime = "حدد ساعة الاستلام";
-
-    if (!formData.returnDate) err.returnDate = "حدد تاريخ التسليم";
-
-    if (!formData.returnTime) err.returnTime = "حدد ساعة التسليم";
-
-    // منع اختيار تاريخ قديم
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-
-    if (formData.pickupDate) {
-      const pickup = new Date(formData.pickupDate);
-
-      if (pickup < currentDate) {
-        err.pickupDate = "لا يمكن اختيار تاريخ قديم";
-      }
-    }
-
-    if (formData.returnDate) {
-      const returnDate = new Date(formData.returnDate);
-
-      if (returnDate < currentDate) {
-        err.returnDate = "لا يمكن اختيار تاريخ قديم";
-      }
-    }
-
-    // التحقق من الوقت
-    if (
-      formData.pickupTime &&
-      (formData.pickupTime < "10:00" || formData.pickupTime > "22:00")
-    ) {
-      err.pickupTime = "ساعة الاستلام يجب أن تكون بين 10 صباحاً و10 مساءً";
-    }
-
-    if (
-      formData.returnTime &&
-      (formData.returnTime < "10:00" || formData.returnTime > "22:00")
-    ) {
-      err.returnTime = "ساعة التسليم يجب أن تكون بين 10 صباحاً و10 مساءً";
-    }
-
-    // مدة الحجز
-    if (formData.pickupDate && formData.returnDate) {
-      const start = new Date(formData.pickupDate);
-      const end = new Date(formData.returnDate);
-
-      const diff = (end - start) / (1000 * 60 * 60 * 24);
-
-      if (diff < 1) {
-        err.returnDate = "لا يمكن الحجز أقل من 24 ساعة";
-      }
-    }
 
     // الصور
     if (!formData.idFront) err.idFront = "صورة الهوية مطلوبة";
@@ -199,14 +152,22 @@ export default function BookingForm() {
     data.append("car_id", car_id);
     data.append("full_name", formData.fullName);
     data.append("phone", formData.phone);
-    data.append("pickup_date", formData.pickupDate);
-    data.append("pickup_time", formData.pickupTime);
-    data.append("return_date", formData.returnDate);
-    data.append("return_time", formData.returnTime);
-    data.append("delivery", airportDelivery ? "1" : "0");
-    if (selectedAirport) {
-      data.append("delivery_location", selectedAirport);
+    data.append("pickup_date", bookingInfo.pickup_date);
+    data.append("pickup_time", bookingInfo.pickup_time);
+    data.append("return_date", bookingInfo.return_date);
+    data.append("return_time", bookingInfo.return_time);
+
+    // تحديد إذا كانت خدمة توصيل أم لا
+    const officeLocations = ["المكتب", "Office"];
+
+    if (officeLocations.includes(bookingInfo.location)) {
+      data.append("delivery", "0");
+      data.append("delivery_location", "المكتب");
+    } else {
+      data.append("delivery", "1");
+      data.append("delivery_location", bookingInfo.location);
     }
+
     data.append("id_front", formData.idFront);
     data.append("id_back", formData.idBack);
     data.append("payment_image", formData.paymentProof);
@@ -215,8 +176,10 @@ export default function BookingForm() {
       const res = await fetch(`${BASE_URL}/api/bookings`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
           Accept: "application/json",
+          ...(token && {
+            Authorization: `Bearer ${token}`,
+          }),
         },
         body: data,
       });
@@ -224,14 +187,13 @@ export default function BookingForm() {
       const result = await res.json();
       if (!res.ok) {
         if (result.errors) {
-          console.log("Validation Errors:", result.errors);
           // عرض الأخطاء للمستخدم
           setErrors(result.errors); // يمكنك تعديل validate ليعرضها
         }
         setSuccess("❌ " + (result.message || "فشل إرسال الطلب"));
         return;
       }
-
+      setBookingNumber(result.booking_number);
       setSuccess("✅ تم إرسال طلبك بنجاح - الطلب قيد المراجعة");
       // يمكنك إعادة تعيين النموذج هنا
     } catch (err) {
@@ -239,151 +201,120 @@ export default function BookingForm() {
       setSuccess("❌ خطأ في الاتصال بالسيرفر");
     }
   };
+
+  const formatTime = (time) => {
+    if (!time) return "";
+
+    const [hour, minute] = time.split(":");
+
+    let h = parseInt(hour, 10);
+    const period = h >= 12 ? "مساءً" : "صباحاً";
+
+    h = h % 12;
+    if (h === 0) h = 12;
+
+    return `${h}:${minute} ${period}`;
+  };
+
   return (
-    <div className="bg-black min-h-screen text-white p-5 max-w-xl mx-auto">
+    <div className="bg-white min-h-screen text-[#2B2B2B] p-5 max-w-xl mx-auto pb-10">
       {/* BACK */}
       <div className="flex justify-end mb-4">
         <button
           onClick={() => navigate(-1)}
-          className="text-white hover:text-yellow-400 transition"
+          className="text-[#B67A2E] hover:text-[#9d6826] transition"
         >
           <FaArrowRight className="text-2xl" />
         </button>
       </div>
-      <h1 className="text-yellow-400 text-2xl text-center mb-6">نموذج الحجز</h1>
 
-      {/* الاسم */}
+      <h1 className="text-[#B67A2E] text-2xl font-bold text-center mb-6">
+        نموذج الحجز
+      </h1>
+
+      {/* BOOKING SUMMARY */}
+      <div className="bg-white shadow-md border border-[#B67A2E]/30 p-5 rounded-2xl mb-5">
+        <h2 className="text-[#B67A2E] text-xl font-bold mb-4 text-right">
+          ملخص الحجز
+        </h2>
+
+        <div className="space-y-3 text-right">
+          <p>
+            مكان الاستلام:
+            <span className="font-bold mr-2">{bookingInfo?.location}</span>
+          </p>
+
+          <p>
+            تاريخ الاستلام:
+            <span className="font-bold mr-2">{bookingInfo?.pickup_date}</span>
+          </p>
+
+          <p>
+            وقت الاستلام:
+            <span className="font-bold mr-2">
+              {formatTime(bookingInfo?.pickup_time)}
+            </span>
+          </p>
+
+          <p>
+            تاريخ التسليم:
+            <span className="font-bold mr-2">{bookingInfo?.return_date}</span>
+          </p>
+
+          <p>
+            وقت التسليم:
+            <span className="font-bold mr-2">
+              {formatTime(bookingInfo?.return_time)}
+            </span>
+          </p>
+
+          <p>
+            السعر اليومي:
+            <span className="font-bold mr-2">${dailyPrice}</span>
+          </p>
+
+          <p>
+            نسبة الخصم:
+            <span className="font-bold mr-2">%{discount}</span>
+          </p>
+
+          <p className="text-[#B67A2E] text-lg font-bold">
+            السعر النهائي:
+            <span className="mr-2">${finalPrice.toFixed(2)}</span>
+          </p>
+        </div>
+      </div>
+
+      {/* USER INFO */}
+
       <Input
         icon={FaUser}
         placeholder="الاسم الكامل"
         value={formData.fullName}
-        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            fullName: e.target.value,
+          })
+        }
         error={errors.fullName}
       />
 
-      {/* الهاتف */}
       <Input
         icon={FaPhone}
         placeholder="رقم الموبايل"
         value={formData.phone}
-        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+        onChange={(e) =>
+          setFormData({
+            ...formData,
+            phone: e.target.value,
+          })
+        }
         error={errors.phone}
       />
 
-      {/* تاريخ الاستلام */}
-      <div className="mb-4">
-        <label className="block text-right mb-2 text-gray-300">
-          تاريخ الاستلام
-        </label>
+      {/* ID IMAGES */}
 
-        <Input
-          icon={FaCalendarAlt}
-          type="date"
-          min={today}
-          value={formData.pickupDate}
-          onChange={(e) =>
-            setFormData({ ...formData, pickupDate: e.target.value })
-          }
-          error={errors.pickupDate}
-        />
-      </div>
-
-      {/* ساعة الاستلام */}
-      <div className="mb-4">
-        <label className="block text-right mb-2 text-gray-300">
-          ساعة الاستلام
-        </label>
-
-        <input
-          type="time"
-          lang="ar"
-          dir="rtl"
-          value={formData.pickupTime}
-          onChange={(e) => {
-            const time = e.target.value;
-
-            if (time >= "10:00" && time <= "22:00") {
-              setFormData({ ...formData, pickupTime: time });
-              setErrors({ ...errors, pickupTime: "" });
-            } else {
-              setErrors({
-                ...errors,
-                pickupTime: "يجب أن تكون الساعة بين 10 صباحاً و10 مساءً",
-              });
-            }
-          }}
-          className="w-full p-3 bg-[#1a1a1a] rounded text-right border border-gray-700 text-white"
-        />
-
-        {errors.pickupTime && (
-          <p className="text-red-500 text-sm mt-1 text-right">
-            {errors.pickupTime}
-          </p>
-        )}
-      </div>
-      {/* تاريخ التسليم */}
-      <div className="mb-4">
-        <label className="block text-right mb-2 text-gray-300">
-          تاريخ التسليم
-        </label>
-
-        <Input
-          icon={FaCalendarAlt}
-          type="date"
-          min={formData.pickupDate || today}
-          value={formData.returnDate}
-          onChange={(e) =>
-            setFormData({ ...formData, returnDate: e.target.value })
-          }
-          error={errors.returnDate}
-        />
-      </div>
-
-      {/* ساعة التسليم */}
-      <div className="mb-4">
-        <label className="block text-right mb-2 text-gray-300">
-          ساعة التسليم
-        </label>
-
-        <input
-          type="time"
-          lang="ar"
-          dir="rtl"
-          value={formData.returnTime}
-          onChange={(e) => {
-            const time = e.target.value;
-
-            if (time >= "10:00" && time <= "22:00") {
-              setFormData({ ...formData, returnTime: time });
-              setErrors({ ...errors, returnTime: "" });
-            } else {
-              setErrors({
-                ...errors,
-                returnTime: "يجب أن تكون الساعة بين 10 صباحاً و10 مساءً",
-              });
-            }
-          }}
-          className="w-full p-3 bg-[#1a1a1a] rounded text-right border border-gray-700 text-white"
-        />
-
-        {errors.returnTime && (
-          <p className="text-red-500 text-sm mt-1 text-right">
-            {errors.returnTime}
-          </p>
-        )}
-      </div>
-
-      {/* 💰 BOX الحساب */}
-      {days > 0 && (
-        <div className="bg-[#1a1a1a] p-4 rounded mb-4 border border-yellow-400">
-          <p>عدد الأيام: {days}</p>
-          <p className="text-yellow-400 font-bold text-lg">
-            الإجمالي: {total}$
-          </p>
-        </div>
-      )}
-
-      {/* الصور */}
       <ImageBox
         field="idFront"
         label="صورة الهوية الأمامية"
@@ -407,91 +338,65 @@ export default function BookingForm() {
         setFormData={setFormData}
         errors={errors}
       />
-
-      {/* ✈️ خدمة المطار */}
-      <div className="bg-[#1a1a1a] p-5 rounded-xl border border-yellow-400">
-        <label className="flex justify-end items-center gap-3 text-yellow-400 font-bold text-lg cursor-pointer group">
-          خدمة توصيل للمطار
-          <FaPlane className="text-2xl group-hover:rotate-12 transition-transform" />
-          <div className="relative">
-            <input
-              type="checkbox"
-              className="peer sr-only"
-              onChange={() => setAirportDelivery(!airportDelivery)}
-              checked={airportDelivery}
-            />
-            <div className="w-6 h-6 bg-gray-700 border-2 border-gray-600 rounded-md peer-checked:bg-yellow-400 peer-checked:border-yellow-400 transition-all duration-200 flex items-center justify-center">
-              {airportDelivery && (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4 text-black"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={4}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              )}
-            </div>
-          </div>
-        </label>
-
-        {airportDelivery && (
-          <div className="mt-5 pt-4 border-t border-gray-700">
-            <label className="block text-right text-gray-300 mb-2 text-sm">
-              اختر المطار:
-            </label>
-
-            <select
-              className="w-full p-3 bg-black border border-gray-700 rounded-lg text-right text-white focus:outline-none focus:border-yellow-400 transition-colors"
-              onChange={(e) => setSelectedAirport(e.target.value)}
-              value={selectedAirport}
-            >
-              <option value="">اختر المطار</option>
-              <option value="مطار دمشق">مطار دمشق</option>
-              <option value="مطار حلب">مطار حلب</option>
-            </select>
-
-            <p className="text-sm text-gray-400 mt-4 text-right">
-              يرجى التواصل مع المكتب لتأكيد الحجز :
-              <span className="text-yellow-400 font-medium">
-                {" "}
-                0965121290 ⚠️
-              </span>
-            </p>
-          </div>
-        )}
+      <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800 text-right">
+        <strong>ملاحظة:</strong> يمكن الدفع نقدًا عند مراجعة مكتب الشركة، وسيتم
+        استكمال إجراءات الدفع وتأكيد الحجز قبل استلام السيارة.
       </div>
-      {/* رابط الدفع */}
-      <div className="bg-[#1a1a1a] p-3 rounded mt-4 flex justify-between items-center">
-        <span className="text-gray-300 text-sm">{paymentLink}</span>
+      {/* PAYMENT LINK */}
+      <div className="bg-white border border-gray-300 shadow-sm p-3 rounded-xl mt-5 flex justify-between items-center">
+        <span className="text-gray-600 text-sm">{paymentLink}</span>
+
         <button
           onClick={() => {
             navigator.clipboard.writeText(paymentLink);
-            setSuccess("✅ تم نسخ الرابط بنجاح");
+            setSuccess("✅ تم نسخ الرابط");
             setTimeout(() => setSuccess(""), 3000);
           }}
-          className="bg-gray-700 hover:bg-gray-600 text-yellow-400 p-3 rounded-lg transition-colors flex-shrink-0"
-          title="نسخ الرابط"
+          className="bg-[#B67A2E] text-white p-3 rounded-xl"
         >
-          <FaCopy className="text-yellow-400" />
+          <FaCopy />
         </button>
       </div>
 
-      {/* زر */}
+      {/* SUBMIT */}
+
       <button
         onClick={handleSubmit}
-        className="bg-yellow-400 text-black w-full p-4 mt-5 rounded font-bold"
+        className="w-full bg-[#B67A2E] text-white p-4 mt-5 rounded-xl font-bold text-lg hover:bg-[#9d6826] transition"
       >
         إرسال الطلب
       </button>
 
-      {success && <p className="text-center mt-3 text-green-400">{success}</p>}
+      {success && (
+        <div className="mt-6 bg-green-50 border border-green-300 rounded-xl p-5 text-center">
+          <h3 className="text-green-700 font-bold text-lg">{success}</h3>
+
+          <p className="mt-4 text-gray-700">رقم الحجز الخاص بك</p>
+
+          <div className="flex justify-center gap-3 mt-3">
+            <div className="px-5 py-3 bg-white border rounded-lg font-bold text-xl tracking-widest">
+              {bookingNumber}
+            </div>
+
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(bookingNumber);
+              }}
+              className="bg-[#B67A2E] text-white px-4 rounded-lg"
+            >
+              نسخ
+            </button>
+          </div>
+
+          <p className="mt-5 text-sm text-red-600 font-semibold">
+            يرجى نسخ وحفظ رقم الحجز لأنه سيستخدم لتتبع حالة طلبك.
+          </p>
+
+          <p className="mt-2 text-sm text-gray-600">
+            ولتسريع إجراءات الحجز يرجى التواصل مع المكتب.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

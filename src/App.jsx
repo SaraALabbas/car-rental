@@ -1,108 +1,118 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
 import { AuthProvider } from "./context/AuthProvider";
 import { useAuth } from "./context/useAuth";
 
-// الصفحات
+// Pages
 import Login from "./pages/login";
 import Register from "./pages/register";
-import Home from "./pages/home";
+
 import WelcomeScreen from "./pages/WelcomeScreen";
+import Home from "./pages/home";
+import CarDetails from "./pages/carDetails";
 import BookingForm from "./pages/bookings";
 
-// صفحات إضافية
-import Orders from "./pages/orders";
-import MyOrders from "./pages/myOrders";
 import Instructions from "./pages/instructions";
+import AboutUs from "./pages/AboutUs";
+
+import MyOrders from "./pages/myOrders";
+import Contract from "./pages/Contract";
+
+// Admin Pages
 import ManageCars from "./pages/manageCars";
-import CarDetails from "./pages/carDetails";
+import Orders from "./pages/orders";
 import AdminContracts from "./pages/AdminContracts";
-import ContractDocument from "./pages/ContractDocument";
-import MyContracts from "./pages/MyContracts";
 import AdminInstructions from "./pages/AdminIstructions";
+import ContractDocument from "./pages/ContractDocument";
+import AdminLayout from "./pages/AdminLayout";
 
-/* 🔐 حماية الصفحات */
-const PrivateRoute = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+// ===============================
+// حماية صفحات الأدمن
+// ===============================
 
-  if (isLoading) return <div>Loading...</div>;
+const AdminRoute = ({ children }) => {
+  const { user, isAuthenticated, loading } = useAuth();
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // غير مسجل دخول
+  if (!isAuthenticated) {
+    return <Navigate to="/admin-login" />;
+  }
+
+  // ليس أدمن
+  if (user?.role !== "admin") {
+    return <Navigate to="/home" />;
+  }
+
+  return children;
 };
+
+// ===============================
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* الصفحة الرئيسية (ترحيبية) */}
+          {/* =====================
+              Welcome
+          ====================== */}
+
           <Route path="/" element={<WelcomeScreen />} />
 
-          {/* صفحات عامة */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          {/* =====================
+              صفحات المستخدم / الضيف
+          ====================== */}
+
+          <Route path="/home" element={<Home />} />
+
+          <Route path="/cars/:id" element={<CarDetails />} />
+
           <Route path="/booking/:id" element={<BookingForm />} />
-          <Route path="/contracts" element={<AdminContracts />} />
-          <Route path="/contracts/:id" element={<ContractDocument />} />
-          <Route path="/my-contracts" element={<MyContracts />} />
-          <Route path="/adminInstructions" element={<AdminInstructions />} />
 
-          {/* صفحات محمية */}
-          <Route
-            path="/home"
-            element={
-              <PrivateRoute>
-                <Home />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/myOrders" element={<MyOrders />} />
 
-          <Route
-            path="/orders"
-            element={
-              <PrivateRoute>
-                <Orders />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/contract" element={<Contract />} />
+
+          <Route path="/about-us" element={<AboutUs />} />
+
+          {/* عرض التعليمات للمستخدم */}
+          <Route path="/instructions" element={<Instructions />} />
+
+          {/* =====================
+              تسجيل الدخول وإنشاء الحساب
+          ====================== */}
+
+          {/* دخول الأدمن فقط */}
+          <Route path="/admin-login" element={<Login />} />
+
+          {/* إنشاء حساب مستخدم */}
+          <Route path="/register" element={<Register />} />
 
           <Route
-            path="/myOrders"
+            path="/admin"
             element={
-              <PrivateRoute>
-                <MyOrders />
-              </PrivateRoute>
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
             }
-          />
+          >
+            <Route index element={<Navigate to="orders" replace />} />
 
-          <Route
-            path="/instructions"
-            element={
-              <PrivateRoute>
-                <Instructions />
-              </PrivateRoute>
-            }
-          />
+            <Route path="orders" element={<Orders />} />
 
-          <Route
-            path="/manageCars"
-            element={
-              <PrivateRoute>
-                <ManageCars />
-              </PrivateRoute>
-            }
-          />
+            <Route path="cars" element={<ManageCars />} />
 
-          <Route
-            path="/car/:id"
-            element={
-              <PrivateRoute>
-                <CarDetails />
-              </PrivateRoute>
-            }
-          />
+            <Route path="contracts" element={<AdminContracts />} />
 
-          {/* أي رابط غلط */}
+            <Route path="contracts/:id" element={<ContractDocument />} />
+
+            <Route path="instructions" element={<AdminInstructions />} />
+          </Route>
+          {/* أي رابط غير موجود */}
+
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>

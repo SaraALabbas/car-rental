@@ -1,16 +1,12 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/useAuth";
-import {
-  FaArrowRight,
-  FaEdit,
-  FaCar,
-  FaMoneyBillWave,
-  FaIdCard,
-  FaPalette,
-} from "react-icons/fa";
+import CarsTable from "../components/Cars/CarsTable";
+import CarsCard from "../components/Cars/CarsCard";
+import CarDetailsModal from "../components/Cars/CarDetailsModal";
+import BASE_URL from "../config/api";
 
-const BASE_URL = "https://car-rental-api-xwof.onrender.com";
+// const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 
 export default function ManageCars() {
   const { token } = useAuth();
@@ -25,13 +21,31 @@ export default function ManageCars() {
   const [km, setKm] = useState("");
   const [images, setImages] = useState([]);
   const [editingCar, setEditingCar] = useState(null);
+  const [selectedCar, setSelectedCar] = useState(null);
   const [message, setMessage] = useState("");
+  const [isMaintenance, setIsMaintenance] = useState(false);
+
+  const [seats, setSeats] = useState("");
+  const [transmission, setTransmission] = useState("");
+  const [fuelType, setFuelType] = useState("");
+  const [insurance, setInsurance] = useState("");
 
   // 📌 جلب السيارات
   const fetchCars = async () => {
-    const res = await fetch(`${BASE_URL}/api/cars`);
-    const data = await res.json();
-    setCars(data);
+    try {
+      const res = await fetch(`${BASE_URL}/api/cars`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+
+      const data = await res.json();
+
+      setCars(data.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -52,7 +66,19 @@ export default function ManageCars() {
 
   // ➕ إضافة سيارة
   const addCar = async () => {
-    if (!name || !price || !plate || !color || !km || images.length < 3) {
+    if (
+      !name ||
+      !price ||
+      !plate ||
+      !color ||
+      !km ||
+      images.length < 3 ||
+      !model_year ||
+      !seats ||
+      !transmission ||
+      !fuelType ||
+      !insurance
+    ) {
       setMessage("⚠️ يجب إدخال جميع البيانات + 3 صور");
       return;
     }
@@ -64,6 +90,12 @@ export default function ManageCars() {
     formData.append("color", color);
     formData.append("daily_km", km);
     formData.append("model_year", model_year);
+    formData.append("is_maintenance", isMaintenance ? 1 : 0);
+
+    formData.append("seats", seats);
+    formData.append("transmission", transmission);
+    formData.append("fuel_type", fuelType);
+    formData.append("insurance", insurance);
 
     images.forEach((img, index) => {
       formData.append(`image${index + 1}`, img.file);
@@ -92,6 +124,10 @@ export default function ManageCars() {
     setKm("");
     setModelYear("");
     setImages([]);
+    setSeats("");
+    setTransmission("");
+    setFuelType("");
+    setInsurance("");
 
     fetchCars();
   };
@@ -106,7 +142,11 @@ export default function ManageCars() {
     setColor(car.color);
     setKm(car.daily_km);
     setModelYear(car.model_year);
-
+    setIsMaintenance(car.is_maintenance);
+    setSeats(car.seats || "");
+    setTransmission(car.transmission || "");
+    setFuelType(car.fuel_type || "");
+    setInsurance(car.insurance || "");
     setImages([]);
   };
 
@@ -121,6 +161,11 @@ export default function ManageCars() {
     formData.append("color", color);
     formData.append("daily_km", km);
     formData.append("model_year", model_year);
+    formData.append("is_maintenance", isMaintenance ? 1 : 0);
+    formData.append("seats", seats);
+    formData.append("transmission", transmission);
+    formData.append("fuel_type", fuelType);
+    formData.append("insurance", insurance);
 
     // الصور اختيارية بالتعديل
     if (images.length > 0) {
@@ -139,8 +184,6 @@ export default function ManageCars() {
       body: formData,
     });
 
-    // const data = await res.json();
-
     if (!res.ok) {
       setMessage("❌ فشل تعديل السيارة");
       return;
@@ -156,6 +199,10 @@ export default function ManageCars() {
     setKm("");
     setModelYear("");
     setImages([]);
+    setSeats("");
+    setTransmission("");
+    setFuelType("");
+    setInsurance("");
 
     fetchCars();
   };
@@ -175,67 +222,229 @@ export default function ManageCars() {
   };
 
   return (
-    <div dir="rtl" className="min-h-screen bg-black text-white p-6">
-      {/* HEADER */}
-      <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => window.history.back()}>
-          <FaArrowRight className="text-white text-xl" />
-        </button>
-        <h1 className="text-2xl font-bold">إدارة السيارات</h1>
+    <div dir="rtl" className="p-2 md:p-6">
+      <div className="mb-6">
+        <h1
+          className="
+    text-3xl
+    font-bold
+    text-[#B67A2E]
+    text-center
+  "
+        >
+          إدارة السيارات
+        </h1>
       </div>
 
       {/* MESSAGE */}
       {message && (
-        <div className="bg-gray-800 border border-gray-700 p-3 rounded-lg mb-4">
+        <div
+          className="
+bg-white
+border
+border-[#B67A2E]/30
+text-gray-700
+p-3
+rounded-xl
+mb-4
+shadow-sm
+"
+        >
           {message}
         </div>
       )}
 
       {/* INPUTS */}
       <input
-        className="w-full p-3 mb-3 bg-gray-900 border border-gray-700 rounded-lg"
+        className="
+w-full
+p-3
+mb-3
+bg-white
+border
+border-[#D7B98E]
+rounded-xl
+outline-none
+focus:ring-2
+focus:ring-[#B67A2E]
+"
         placeholder="اسم السيارة"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
 
       <input
-        className="w-full p-3 mb-3 bg-gray-900 border border-gray-700 rounded-lg"
+        className="
+w-full
+p-3
+mb-3
+bg-white
+border
+border-[#D7B98E]
+rounded-xl
+outline-none
+focus:ring-2
+focus:ring-[#B67A2E]
+"
         placeholder="السعر اليومي"
         value={price}
         onChange={(e) => setPrice(e.target.value)}
       />
 
       <input
-        className="w-full p-3 mb-3 bg-gray-900 border border-gray-700 rounded-lg"
+        className="
+w-full
+p-3
+mb-3
+bg-white
+border
+border-[#D7B98E]
+rounded-xl
+outline-none
+focus:ring-2
+focus:ring-[#B67A2E]
+"
         placeholder="رقم اللوحة"
         value={plate}
         onChange={(e) => setPlate(e.target.value)}
       />
 
       <input
-        className="w-full p-3 mb-3 bg-gray-900 border border-gray-700 rounded-lg"
+        className="
+w-full
+p-3
+mb-3
+bg-white
+border
+border-[#D7B98E]
+rounded-xl
+outline-none
+focus:ring-2
+focus:ring-[#B67A2E]
+"
         placeholder="اللون"
         value={color}
         onChange={(e) => setColor(e.target.value)}
       />
 
       <input
-        className="w-full p-3 mb-3 bg-gray-900 border border-gray-700 rounded-lg"
+        className="
+w-full
+p-3
+mb-3
+bg-white
+border
+border-[#D7B98E]
+rounded-xl
+outline-none
+focus:ring-2
+focus:ring-[#B67A2E]
+"
         placeholder="الكيلومترات السموحة يوميا "
         value={km}
         onChange={(e) => setKm(e.target.value)}
       />
 
       <input
-        className="w-full p-3 mb-3 bg-gray-900 border border-gray-700 rounded-lg"
+        className="
+w-full
+p-3
+mb-3
+bg-white
+border
+border-[#D7B98E]
+rounded-xl
+outline-none
+focus:ring-2
+focus:ring-[#B67A2E]
+"
         placeholder=" موديل السيارة"
         value={model_year}
         onChange={(e) => setModelYear(e.target.value)}
       />
+      <input
+        className="
+w-full
+p-3
+mb-3
+bg-white
+border
+border-[#D7B98E]
+rounded-xl
+outline-none
+focus:ring-2
+focus:ring-[#B67A2E]
+"
+        placeholder="عدد المقاعد"
+        value={seats}
+        onChange={(e) => setSeats(e.target.value)}
+      />
+
+      <input
+        className="
+w-full
+p-3
+mb-3
+bg-white
+border
+border-[#D7B98E]
+rounded-xl
+outline-none
+focus:ring-2
+focus:ring-[#B67A2E]
+"
+        placeholder="نوع ناقل الحركة (يدوي / أوتوماتيك)"
+        value={transmission}
+        onChange={(e) => setTransmission(e.target.value)}
+      />
+
+      <input
+        className="
+w-full
+p-3
+mb-3
+bg-white
+border
+border-[#D7B98E]
+rounded-xl
+outline-none
+focus:ring-2
+focus:ring-[#B67A2E]
+"
+        placeholder="نوع الوقود (بنزين / مازوت)"
+        value={fuelType}
+        onChange={(e) => setFuelType(e.target.value)}
+      />
+
+      <input
+        className="
+w-full
+p-3
+mb-3
+bg-white
+border
+border-[#D7B98E]
+rounded-xl
+outline-none
+focus:ring-2
+focus:ring-[#B67A2E]
+"
+        placeholder="قيمة التأمين"
+        value={insurance}
+        onChange={(e) => setInsurance(e.target.value)}
+      />
+      <select
+        className="w-full p-3 mb-3 bg-white border border-[#D7B98E] rounded-lg"
+        value={isMaintenance}
+        onChange={(e) => setIsMaintenance(e.target.value === "true")}
+      >
+        <option value="false">متاحة</option>
+
+        <option value="true">تحت الصيانة</option>
+      </select>
 
       {/* UPLOAD */}
-      <label className="cursor-pointer inline-block bg-yellow-400 text-black font-bold py-2 px-4 rounded-lg mb-4">
+      <label className="cursor-pointer inline-block bg-[#B67A2E] text-white font-bold py-2 px-4 rounded-lg mb-4">
         📷 إضافة صور
         <input
           type="file"
@@ -271,78 +480,28 @@ export default function ManageCars() {
       <button
         onClick={editingCar ? updateCar : addCar}
         className={`w-full font-bold py-3 px-4 rounded-lg mt-6 mb-10 ${
-          editingCar ? "bg-green-500 text-black" : "bg-yellow-400 text-black"
+          editingCar ? "bg-green-600 text-white" : "bg-[#B67A2E] text-white"
         }`}
       >
         {editingCar ? "💾 حفظ التعديل" : "➕ إضافة السيارة"}
       </button>
 
       {/* CARS */}
-      <div className="space-y-4">
-        {cars.map((item) => (
-          <div
-            key={item.id}
-            className="bg-gray-900 border border-gray-800 p-4 rounded-xl"
-          >
-            <div className="space-y-2">
-              <p className="flex items-center gap-2">
-                <FaCar className="text-yellow-400" />
-                <b>السيارة:</b> {item.name}
-              </p>
+      {/* عرض السيارات */}
 
-              <p className="flex items-center gap-2">
-                <FaMoneyBillWave className="text-green-400" />
-                <b>السعر:</b> {item.price} / يوم
-              </p>
-
-              <p className="flex items-center gap-2">
-                <FaIdCard className="text-blue-400" />
-                <b>اللوحة:</b> {item.plate_number}
-              </p>
-
-              <p className="flex items-center gap-2">
-                <FaPalette className="text-pink-400" />
-                <b>اللون:</b> {item.color}
-              </p>
-
-              <p className="flex items-center gap-2">
-                <b>موديل السيارة:</b> {item.model_year}
-              </p>
-            </div>
-
-            <div className="flex gap-2 my-3">
-              <img
-                src={item.image1}
-                className="w-24 h-20 rounded-lg object-cover"
-              />
-              <img
-                src={item.image2}
-                className="w-24 h-20 rounded-lg object-cover"
-              />
-              <img
-                src={item.image3}
-                className="w-24 h-20 rounded-lg object-cover"
-              />
-            </div>
-
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleEdit(item)}
-                className="bg-blue-500 px-3 py-1 rounded-lg flex items-center gap-1"
-              >
-                <FaEdit /> تعديل
-              </button>
-
-              <button
-                onClick={() => deleteCar(item.id)}
-                className="bg-red-500 px-3 py-1 rounded-lg"
-              >
-                حذف
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+      <CarsTable
+        cars={cars}
+        handleEdit={handleEdit}
+        deleteCar={deleteCar}
+        openDetails={setSelectedCar}
+      />
+      <CarsCard
+        cars={cars}
+        handleEdit={handleEdit}
+        deleteCar={deleteCar}
+        openDetails={setSelectedCar}
+      />
+      <CarDetailsModal car={selectedCar} close={() => setSelectedCar(null)} />
     </div>
   );
 }

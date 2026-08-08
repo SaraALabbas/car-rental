@@ -23,10 +23,6 @@ export default function MyOrders() {
   };
 
   const handleSearch = async () => {
-    console.log("booking number:", bookingNumber);
-    console.log("phone:", phone);
-    console.log(order?.car);
-
     if (!bookingNumber || !phone) {
       setError("يرجى إدخال رقم الحجز ورقم الهاتف");
       return;
@@ -49,7 +45,6 @@ export default function MyOrders() {
       });
 
       const data = await res.json();
-      console.log("API RESPONSE:", data);
       if (!res.ok) {
         setOrder(null);
         setError(data.message || "لم يتم العثور على الحجز");

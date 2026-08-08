@@ -203,7 +203,7 @@ export default function AdminLayout() {
       <div className="flex-1">
         {/* Header */}
 
-        <header className="bg-white shadow-sm h-16 flex items-center justify-between px-5">
+        <header className="bg-white shadow-sm h-16 flex items-center justify-end px-5">
           <button className="lg:hidden" onClick={() => setOpen(true)}>
             <FaBars size={22} />
           </button>

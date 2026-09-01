@@ -343,7 +343,24 @@ export default function ContractDocument() {
               </span>
 
               <span className="border-b border-black min-w-[100px] px-2 text-center">
-                {contract.booking?.car?.price || ""}
+                {(() => {
+                  const pickupDate = new Date(contract.booking?.pickup_date);
+                  const returnDate = new Date(contract.booking?.return_date);
+
+                  const days = Math.max(
+                    Math.ceil(
+                      (returnDate - pickupDate) / (1000 * 60 * 60 * 24),
+                    ),
+                    1,
+                  );
+
+                  const pricePerDayAfterDiscount =
+                    Number(contract.booking?.final_price || 0) / days;
+
+                  return pricePerDayAfterDiscount.toLocaleString("ar-EG", {
+                    maximumFractionDigits: 2,
+                  });
+                })()}
               </span>
 
               <span>$</span>

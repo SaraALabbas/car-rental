@@ -1,22 +1,20 @@
 import { FaPhoneAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-
 import ContractLogo from "../assets/Logo.jpg";
-
-// const BASE_URL = "https://car-rental-api-xwof.onrender.com";
 
 export default function Contract() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#F8F5F1] p-6" dir="rtl">
-      {/* العنوان والأزرار */}
-      <div className="flex justify-between items-center mb-6">
+    <div className="min-h-screen bg-[#F8F5F1] p-3 sm:p-6" dir="rtl">
+      {/* ================= زر الإغلاق ================= */}
+      <div className="flex justify-start mb-4 sm:mb-6">
         <button
           onClick={() => navigate("/home")}
           className="
       w-10 h-10
+      sm:w-11 sm:h-11
       flex items-center justify-center
       rounded-full
       bg-white
@@ -26,35 +24,47 @@ export default function Contract() {
       hover:text-[#9A6525]
       transition
       shadow-sm
+      shrink-0
     "
+          aria-label="إغلاق العقد"
         >
-          <IoClose size={24} />
+          <IoClose size={25} />
         </button>
-
-        <h1 className="flex-1 text-center text-3xl font-bold text-[#B67A2E]">
-          وثيقة العقد
-        </h1>
-
-        {/* عنصر وهمي ليبقى العنوان في المنتصف */}
-        <div className="w-10"></div>
       </div>
-      {/* صفحة العقد */}
-      <div className="overflow-auto rounded-2xl shadow-lg">
+
+      {/* ================= صفحة العقد ================= */}
+      <div
+        className="
+          w-full
+          overflow-x-auto
+          overflow-y-hidden
+          rounded-2xl
+          shadow-lg
+          pb-3
+        "
+      >
+        {/* 
+          حاوية تحافظ على حجم A4.
+          على الموبايل يبقى العقد بنفس النسبة
+          ويمكن للمستخدم التحريك يمين ويسار.
+        */}
         <div
           className="
-          bg-white
-          text-black
-          border
-          border-gray-300
-          mx-auto
-          p-8
-        "
+            bg-white
+            text-black
+            border
+            border-gray-300
+            mx-auto
+            p-4
+            sm:p-6
+            md:p-8
+          "
           style={{
             width: "210mm",
+            minWidth: "210mm",
             minHeight: "297mm",
           }}
         >
-          {" "}
           {/* ================= HEADER ================= */}
           <div className="border border-black p-4 mb-6">
             {/* بسم الله */}
@@ -82,8 +92,9 @@ export default function Contract() {
               </div>
 
               {/* اليسار */}
-              <div className=" text-[15px] leading-8 font-semibold">
+              <div className="text-[15px] leading-8 font-semibold">
                 <p>إدلب - جنوب دوار الزراعة ب 150 م على اليمين</p>
+
                 <div className="ml-16">
                   <div className="flex items-center gap-2">
                     <span>0988453802</span>
@@ -103,8 +114,8 @@ export default function Contract() {
               </div>
             </div>
           </div>
+
           {/* ================= الفريقين ================= */}
-          {/* ================= الفريقين - تصميم متساوي ================= */}
           <div className="border-2 border-black mb-8 overflow-hidden">
             <table className="w-full border-collapse table-fixed">
               <thead>
@@ -117,22 +128,24 @@ export default function Contract() {
                   </th>
                 </tr>
               </thead>
+
               <tbody className="text-[15px] align-top">
                 {/* الاسم والنسبة */}
                 <tr>
                   <td className="p-3 border-l-2 border-black">
                     <span className="font-semibold">الاسم والنسبة :</span>
+
                     <div className="border-b border-black mt-1 min-h-[28px]">
                       محمد بطل
                     </div>
                   </td>
+
                   <td className="p-3">
                     <span className="font-semibold">الاسم والنسبة :</span>
-                    <input
-                      dir="rtl"
-                      type="text"
-                      className="border-b border-black w-full mt-1 outline-none bg-transparent min-h-[28px] text-right"
-                    />
+
+                    <div className="border-b border-black mt-1 min-h-[28px]">
+                      &nbsp;
+                    </div>
                   </td>
                 </tr>
 
@@ -140,17 +153,18 @@ export default function Contract() {
                 <tr>
                   <td className="p-3 border-l-2 border-black">
                     <span className="font-semibold">اسم الأب :</span>
+
                     <div className="border-b border-black mt-1 min-h-[28px]">
                       محمد كمال
                     </div>
                   </td>
+
                   <td className="p-3">
                     <span className="font-semibold">اسم الأب :</span>
-                    <input
-                      dir="rtl"
-                      type="text"
-                      className="border-b border-black w-full mt-1 outline-none bg-transparent min-h-[28px] text-right"
-                    />
+
+                    <div className="border-b border-black mt-1 min-h-[28px]">
+                      &nbsp;
+                    </div>
                   </td>
                 </tr>
 
@@ -158,16 +172,18 @@ export default function Contract() {
                 <tr>
                   <td className="p-3 border-l-2 border-black">
                     <span className="font-semibold">اسم الأم :</span>
+
                     <div className="border-b border-black mt-1 min-h-[28px]">
                       مريم الجسري
                     </div>
                   </td>
+
                   <td className="p-3">
                     <span className="font-semibold">اسم الأم :</span>
-                    <input
-                      type="text"
-                      className="border-b border-black w-full mt-1 outline-none bg-transparent min-h-[28px] text-right"
-                    />
+
+                    <div className="border-b border-black mt-1 min-h-[28px]">
+                      &nbsp;
+                    </div>
                   </td>
                 </tr>
 
@@ -175,17 +191,18 @@ export default function Contract() {
                 <tr>
                   <td className="p-3 border-l-2 border-black">
                     <span className="font-semibold">مكان وتاريخ الولادة :</span>
+
                     <div className="border-b border-black mt-1 min-h-[28px]">
                       إدلب 1999-3-21
                     </div>
                   </td>
+
                   <td className="p-3">
                     <span className="font-semibold">مكان وتاريخ الولادة :</span>
-                    <input
-                      dir="rtl"
-                      type="text"
-                      className="border-b border-black w-full mt-1 outline-none bg-transparent min-h-[28px] text-right"
-                    />
+
+                    <div className="border-b border-black mt-1 min-h-[28px]">
+                      &nbsp;
+                    </div>
                   </td>
                 </tr>
 
@@ -193,59 +210,62 @@ export default function Contract() {
                 <tr>
                   <td className="p-3 border-l-2 border-black">
                     <span className="font-semibold">رقم البطاقة الشخصية :</span>
+
                     <div className="border-b border-black mt-1 min-h-[28px]">
                       07010038000
                     </div>
                   </td>
+
                   <td className="p-3">
                     <span className="font-semibold">رقم البطاقة الشخصية :</span>
-                    <input
-                      dir="rtl"
-                      type="text"
-                      className="border-b border-black w-full mt-1 outline-none bg-transparent min-h-[28px] text-right"
-                    />
+
+                    <div className="border-b border-black mt-1 min-h-[28px]">
+                      &nbsp;
+                    </div>
                   </td>
                 </tr>
-
                 {/* محل ورقم القيد */}
                 <tr>
                   <td className="p-3 border-l-2 border-black">
                     <span className="font-semibold">محل ورقم القيد :</span>
+
                     <div className="border-b border-black mt-1 min-h-[28px]">
                       فنري 24
                     </div>
                   </td>
+
                   <td className="p-3">
                     <span className="font-semibold">محل ورقم القيد :</span>
-                    <input
-                      dir="rtl"
-                      type="text"
-                      className="border-b border-black w-full mt-1 outline-none bg-transparent min-h-[28px] text-right"
-                    />
+
+                    <div className="border-b border-black mt-1 min-h-[28px]">
+                      &nbsp;
+                    </div>
                   </td>
                 </tr>
 
                 {/* رقم الهاتف */}
                 <tr>
                   <td className="p-3 border-l-2 border-black">
-                    <span className="font-semibold"> رقم الهاتف :</span>
+                    <span className="font-semibold">رقم الهاتف :</span>
+
                     <div className="border-b border-black mt-1 min-h-[28px]">
                       0988433802
                     </div>
                   </td>
+
                   <td className="p-3">
                     <span className="font-semibold">رقم الهاتف :</span>
-                    <input
-                      dir="rtl"
-                      type="text"
-                      className="border-b border-black w-full mt-1 outline-none bg-transparent min-h-[28px] text-right"
-                    />
+
+                    <div className="border-b border-black mt-1 min-h-[28px]">
+                      &nbsp;
+                    </div>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          {/* ================= الجزء السفلي - الاتفاق والشروط ================= */}
+
+          {/* ================= الجزء السفلي ================= */}
           <div className="border-2 border-black p-6 text-[15px] leading-loose mb-8">
             {/* العنوان */}
             <p className="mb-8 text-right pr-6 font-semibold text-[17px]">
@@ -259,31 +279,44 @@ export default function Contract() {
                 اتفق الفريق الأول مع الفريق الثاني على إيجار سيارة نوع:
               </span>
 
-              <span className="border-b border-black min-w-[90px] px-2 text-center"></span>
+              <span className="border-b border-black min-w-[90px] px-2 text-center">
+                &nbsp;
+              </span>
 
               <span className="font-semibold">موديل:</span>
 
-              <span className="border-b border-black min-w-[90px] px-2 text-center"></span>
+              <span className="border-b border-black min-w-[90px] px-2 text-center">
+                &nbsp;
+              </span>
+
               <span className="font-semibold">اللون:</span>
 
-              <span className="border-b border-black min-w-[90px] px-2 text-center"></span>
+              <span className="border-b border-black min-w-[90px] px-2 text-center">
+                &nbsp;
+              </span>
             </div>
 
             {/* السطر الثاني */}
             <div className="flex flex-wrap items-center gap-3 mb-5">
               <span className="font-semibold">رقم اللوحة</span>
 
-              <span className="border-b border-black min-w-[140px] px-2 text-center"></span>
+              <span className="border-b border-black min-w-[140px] px-2 text-center">
+                &nbsp;
+              </span>
 
               <span className="font-semibold">ولمدة</span>
 
-              <span className="border-b border-black min-w-[100px] px-2 text-center"></span>
+              <span className="border-b border-black min-w-[100px] px-2 text-center">
+                &nbsp;
+              </span>
 
               <span className="font-semibold">
                 لقاء بدل نقدي لليوم الواحد وقدره
               </span>
 
-              <span className="border-b border-black min-w-[100px] px-2 text-center"></span>
+              <span className="border-b border-black min-w-[100px] px-2 text-center">
+                &nbsp;
+              </span>
 
               <span>$</span>
             </div>
@@ -292,59 +325,70 @@ export default function Contract() {
             <div className="flex flex-wrap items-center gap-3 mb-5">
               <span className="font-semibold">ساعة المغادرة</span>
 
-              <span className="border-b border-black min-w-[100px] px-2 text-center"></span>
+              <span className="border-b border-black min-w-[100px] px-2 text-center">
+                &nbsp;
+              </span>
 
               <span className="font-semibold">اعتباراً من تاريخ</span>
-
-              <span className="border-b border-black min-w-[140px] px-2 text-center"></span>
+              <span className="border-b border-black min-w-[140px] px-2 text-center">
+                &nbsp;
+              </span>
 
               <span className="font-semibold">ولغاية تاريخ</span>
 
-              <span className="border-b border-black min-w-[140px] px-2 text-center"></span>
+              <span className="border-b border-black min-w-[140px] px-2 text-center">
+                &nbsp;
+              </span>
             </div>
 
             {/* السطر الرابع */}
             <div className="flex flex-wrap items-center gap-3 mb-5">
               <span className="font-semibold">وتأمين قدره</span>
 
-              <input
-                type="text"
+              <span
+                className="border-b border-black text-center shrink-0"
                 style={{
                   width: "80px",
                   minWidth: "80px",
                   maxWidth: "80px",
                 }}
-                className="appearance-none border-0 border-b border-black outline-none bg-transparent text-center p-0 m-0 shrink-0"
-              />
+              >
+                &nbsp;
+              </span>
+
               <span className="font-semibold">
                 الكيلو متر المسموح لليوم الواحد
               </span>
 
-              <span className="border-b border-black min-w-[100px] px-2 text-center"></span>
+              <span className="border-b border-black min-w-[100px] px-2 text-center">
+                &nbsp;
+              </span>
 
               <span className="font-semibold">قيمة الساعة الزائدة</span>
 
-              <input
-                type="text"
+              <span
+                className="border-b border-black text-center shrink-0"
                 style={{
                   width: "80px",
                   minWidth: "80px",
                   maxWidth: "80px",
                 }}
-                className="appearance-none border-0 border-b border-black outline-none bg-transparent text-center p-0 m-0 shrink-0 min-w-[80px]"
-              />
+              >
+                &nbsp;
+              </span>
 
               <span className="font-semibold">عداد الخروج</span>
 
-              <input
-                type="text"
+              <span
+                className="border-b border-black text-center shrink-0"
                 style={{
                   width: "80px",
                   minWidth: "80px",
                   maxWidth: "80px",
                 }}
-                className="border-b border-black outline-none bg-transparent text-center "
-              />
+              >
+                &nbsp;
+              </span>
             </div>
 
             {/* الملاحظات */}
@@ -356,86 +400,50 @@ export default function Contract() {
               </p>
             </div>
           </div>
+
           {/* ================= التواقيع ================= */}
           <div className="mt-10">
             {/* العناوين */}
             <div className="grid grid-cols-4 text-center text-[15px] font-semibold mb-10">
               <div>الفريق الأول</div>
-
               <div>الفريق الثاني</div>
-
               <div>الشاهد الأول</div>
-
               <div>الشاهد الثاني</div>
             </div>
 
+            {/* خطوط التواقيع */}
             <div className="grid grid-cols-4 gap-4 mb-6">
               <div className="-mt-10">
-                <input
-                  type="text"
-                  defaultValue={"محمد بطل"}
-                  className="
-      w-full
-      border-0
-      border-b
-      border-black
-      outline-none
-      bg-transparent
-      text-center
-    "
-                />
+                <div className="w-full border-b border-black h-[28px] text-center">
+                  محمد بطل
+                </div>
               </div>
 
               <div className="-mt-10">
-                <input
-                  type="text"
-                  className="
-      w-full
-      border-0
-      border-b
-      border-black
-      outline-none
-      bg-transparent
-      text-center
-    "
-                />
+                <div className="w-full border-b border-black h-[28px]">
+                  &nbsp;
+                </div>
               </div>
 
               <div className="-mt-10">
-                <input
-                  type="text"
-                  className="
-      w-full
-      border-0
-      border-b
-      border-black
-      outline-none
-      bg-transparent
-      text-center
-    "
-                />
+                <div className="w-full border-b border-black h-[28px]">
+                  &nbsp;
+                </div>
               </div>
 
               <div className="-mt-10">
-                <input
-                  type="text"
-                  className="
-      w-full
-      border-0
-      border-b
-      border-black
-      outline-none
-      bg-transparent
-      text-center
-    "
-                />
+                <div className="w-full border-b border-black h-[28px]">
+                  &nbsp;
+                </div>
               </div>
             </div>
           </div>
+
           {/* ================= خاتمة العقد ================= */}
           <div className="mt-20 text-right pr-6 text-[15px] leading-loose">
             <p className="mb-4">
-              حرر هذا العقد على نسختين في تاريخ <span className="px-6"></span>
+              حرر هذا العقد على نسختين في تاريخ
+              <span className="px-6">&nbsp;</span>
               وعلى مسؤولية طرفي العقد
             </p>
           </div>

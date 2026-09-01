@@ -50,13 +50,17 @@ export default function MyContracts() {
   }, [token]);
 
   // 🔍 Search مضبوط
-  const filtered = contracts.filter((c, index) => {
-    const number = String(index + 1);
-    const car = c.booking?.car?.name?.toLowerCase() || "";
-    const value = search.toLowerCase();
+  const filtered = contracts
+    .filter((c) => {
+      const contractNumber = String(c.contract_number ?? "");
+      const car = c.booking?.car?.name?.toLowerCase() ?? "";
+      const value = search.toLowerCase();
 
-    return number.includes(value) || car.includes(value);
-  });
+      return contractNumber.includes(value) || car.includes(value);
+    })
+    .sort((a, b) => {
+      return Number(a.contract_number) - Number(b.contract_number);
+    });
 
   return (
     <div className="min-h-screen bg-black text-white p-6 w-full" dir="rtl">
@@ -84,7 +88,7 @@ export default function MyContracts() {
       {/* Grid */}
       <div className=" w-full max-w-[1800px] mx-auto">
         <div className="flex flex-wrap gap-8 justify-start">
-          {filtered.map((c, index) => (
+          {filtered.map((c) => (
             <div
               key={c.id}
               onClick={() => navigate(`/contracts/${c.id}`)}
@@ -92,7 +96,7 @@ export default function MyContracts() {
             >
               {/* رقم العقد */}
               <h2 className="text-blue-400 font-bold text-2xl mb-3">
-                عقد رقم: {index + 1}
+                عقد رقم: {c.contract_number}
               </h2>
 
               {/* السيارة */}

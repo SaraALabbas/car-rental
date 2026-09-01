@@ -122,7 +122,7 @@ export default function BookingForm() {
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState("");
 
-  const paymentLink = "2fcf9b7e1d77db640c5b11a26bd1e780";
+  const paymentLink = "69288aca345721a0f0006aa5a639ce43";
 
   /* ================= VALIDATION ================= */
   const validate = () => {
@@ -340,24 +340,36 @@ export default function BookingForm() {
       />
       <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800 text-right">
         <strong>ملاحظة:</strong> يمكن الدفع نقدًا عند مراجعة مكتب الشركة، وسيتم
-        استكمال إجراءات الدفع وتأكيد الحجز قبل استلام السيارة.
+        استكمال إجراءات الدفع وتأكيد الحجز قبل استلام السيارة. للاستفسار أو
+        التنسيق، يمكن التواصل معنا على الرقم{" "}
+        <a
+          href="tel:+963965121290"
+          className="text-[#B67A2E] font-bold hover:underline"
+        >
+          +963 965 121 290
+        </a>
       </div>
       {/* PAYMENT LINK */}
-      <div className="bg-white border border-gray-300 shadow-sm p-3 rounded-xl mt-5 flex justify-between items-center">
-        <span className="text-gray-600 text-sm">{paymentLink}</span>
+      <div className="mt-5">
+        <label className="block text-gray-700 text-sm font-semibold mb-2 text-right">
+          كود الشام كاش
+        </label>
 
-        <button
-          onClick={() => {
-            navigator.clipboard.writeText(paymentLink);
-            setSuccess("✅ تم نسخ الرابط");
-            setTimeout(() => setSuccess(""), 3000);
-          }}
-          className="bg-[#B67A2E] text-white p-3 rounded-xl"
-        >
-          <FaCopy />
-        </button>
+        <div className="bg-white border border-gray-300 shadow-sm p-3 rounded-xl flex justify-between items-center">
+          <span className="text-gray-600 text-sm">{paymentLink}</span>
+
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(paymentLink);
+              setSuccess("✅ تم نسخ الرابط");
+              setTimeout(() => setSuccess(""), 3000);
+            }}
+            className="bg-[#B67A2E] text-white p-3 rounded-xl"
+          >
+            <FaCopy />
+          </button>
+        </div>
       </div>
-
       {/* SUBMIT */}
 
       <button

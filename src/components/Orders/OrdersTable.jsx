@@ -3,6 +3,7 @@ export default function OrdersTable({
   openDetails,
   updateStatus,
   setRejectId,
+  setDeleteId,
 }) {
   return (
     <div className="hidden lg:block bg-white rounded-2xl shadow-md border border-[#B67A2E]/20 overflow-hidden">
@@ -33,7 +34,6 @@ export default function OrdersTable({
               {/* المستأجر */}
               <td className="p-4">
                 <p className="font-semibold">{order.full_name}</p>
-
                 <p className="text-gray-500 text-sm">{order.phone}</p>
               </td>
 
@@ -57,6 +57,7 @@ export default function OrdersTable({
                   السعر اليومي: {order.car?.price} $
                 </p>
               </td>
+
               {/* التاريخ */}
               <td className="p-4 text-sm">
                 <p>
@@ -97,51 +98,77 @@ export default function OrdersTable({
               </td>
 
               {/* الإجراءات */}
-              <td className="p-4">
+              <td className="p-4 min-w-[180px]">
+                {/* التفاصيل */}
                 <button
                   onClick={() => openDetails(order)}
                   className="
-                  bg-[#B67A2E]
-                  text-white
-                  px-4
-                  py-2
-                  rounded-xl
-                  mb-2
-                  w-full
-                  hover:bg-[#9A6525]
-                  "
+            w-full
+            bg-[#B67A2E]
+            text-white
+            px-4
+            py-2
+            rounded-xl
+            mb-2
+            hover:bg-[#9A6525]
+            transition
+            font-bold
+          "
                 >
                   التفاصيل
                 </button>
 
+                {/* قبول ورفض */}
                 {order.status === "pending" && (
-                  <div className="flex gap-2">
+                  <div className="grid grid-cols-2 gap-2 mb-2">
                     <button
                       onClick={() => updateStatus(order.id, "accepted")}
                       className="
-                      bg-green-600
-                      text-white
-                      px-3
-                      py-2
-                      rounded-lg
-                      "
+                bg-green-600
+                hover:bg-green-700
+                text-white
+                py-2
+                rounded-xl
+                font-bold
+                transition
+              "
                     >
-                      قبول
+                      ✓ قبول
                     </button>
+
                     <button
                       onClick={() => setRejectId(order.id)}
                       className="
-                      bg-red-600
-                      text-white
-                      px-3
-                      py-2
-                      rounded-lg
-                      "
+                bg-red-500
+                hover:bg-red-600
+                text-white
+                py-2
+                rounded-xl
+                font-bold
+                transition
+              "
                     >
-                      رفض
+                      ✕ رفض
                     </button>
                   </div>
                 )}
+
+                {/* حذف */}
+                <button
+                  onClick={() => setDeleteId(order.id)}
+                  className="
+            w-full
+            bg-gray-700
+            hover:bg-gray-800
+            text-white
+            py-2
+            rounded-xl
+            font-bold
+            transition
+          "
+                >
+                  🗑️ حذف الطلب
+                </button>
               </td>
             </tr>
           ))}

@@ -4,6 +4,7 @@ export default function OrderCard({
   openDetails,
   updateStatus,
   setRejectId,
+  setDeleteId,
 }) {
   return (
     <div className="lg:hidden">
@@ -52,6 +53,10 @@ export default function OrderCard({
             <p>
               <span className="text-gray-500">الموديل:</span>{" "}
               {order.car?.model_year}
+            </p>
+            <p>
+              <span className="text-gray-500"> رقم اللوحة:</span>{" "}
+              {order.car?.plate_number}
             </p>
           </div>
 
@@ -111,49 +116,82 @@ export default function OrderCard({
           </div>
 
           {/* الأزرار */}
-
-          <div className="mt-4 flex gap-3">
+          <div className="mt-5 space-y-3">
+            {/* زر التفاصيل */}
             <button
               onClick={() => openDetails(order)}
               className="
-              flex-1
-              bg-[#B67A2E]
-              text-white
-              py-3
-              rounded-xl
-              font-bold
-              "
+      w-full
+      bg-[#B67A2E]
+      hover:bg-[#9d6825]
+      text-white
+      py-3
+      rounded-xl
+      font-bold
+      transition
+    "
             >
               التفاصيل
             </button>
 
-            {order.status === "pending" && (
-              <>
+            {/* أزرار الإجراءات */}
+            <div className="grid grid-cols-3 gap-2">
+              {/* قبول */}
+              {order.status === "pending" ? (
                 <button
                   onClick={() => updateStatus(order.id, "accepted")}
                   className="
-                  bg-green-600
-                  text-white
-                  px-4
-                  rounded-xl
-                  "
+          bg-green-600
+          hover:bg-green-700
+          text-white
+          py-3
+          rounded-xl
+          font-bold
+          transition
+        "
                 >
-                  ✓
+                  ✓ قبول
                 </button>
+              ) : (
+                <div />
+              )}
 
+              {/* رفض */}
+              {order.status === "pending" ? (
                 <button
                   onClick={() => setRejectId(order.id)}
                   className="
-                  bg-red-600
-                  text-white
-                  px-4
-                  rounded-xl
-                  "
+          bg-red-500
+          hover:bg-red-600
+          text-white
+          py-3
+          rounded-xl
+          font-bold
+          transition
+        "
                 >
-                  ✕
+                  ✕ رفض
                 </button>
-              </>
-            )}
+              ) : (
+                <div />
+              )}
+
+              {/* حذف */}
+              <button
+                onClick={() => setDeleteId(order.id)}
+                className="
+        bg-gray-700
+        hover:bg-gray-800
+        text-white
+        py-3
+        rounded-xl
+        font-bold
+        transition
+      "
+              >
+                🗑️ حذف
+              </button>
+            </div>
           </div>
         </div>
       ))}

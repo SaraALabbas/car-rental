@@ -51,8 +51,9 @@ export default function AdminContracts() {
       contractNumber.includes(searchValue) || userName.includes(searchValue)
     );
   });
-  const sortedContracts = [...filteredContracts].sort((a, b) => b.id - a.id);
-
+  const sortedContracts = [...filteredContracts].sort(
+    (a, b) => Number(a.contract_number) - Number(b.contract_number),
+  );
   return (
     <div dir="rtl" className="min-h-screen bg-[#F8F5F1] p-6">
       {/* Header */}
